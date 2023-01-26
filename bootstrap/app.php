@@ -14,7 +14,16 @@
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
-
+if (isset($_SERVER['HTTP_HOST'])) {
+    $hostArray = explode('.', $_SERVER['HTTP_HOST']);
+    //if the address is a subdomain and exist the .xxx.env file
+    $envFile = sprintf('.%s.env', $hostArray[0]);
+    
+    if (count($hostArray) >=  2 && file_exists(sprintf('%s/%s', $app['path.base'], $envFile))) {
+        $app->loadEnvironmentFrom($envFile);
+    }
+}
+// require('env.php');
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
