@@ -106,9 +106,21 @@ class Setup
          */
         Artisan::call( 'storage:link', [ '--force' => true ] );
 
+        $field['admin_username'] = 'posuser';
+        $field['password'] = 'rocks22';
+        $field['admin_email'] = 'test@test.com';
+
+        $this->runMigration($field);
+
+        // return [
+        //     'status' => 'success',
+        //     'message' => __( 'The connexion with the database was successful' ),
+        // ];
+
         return [
             'status' => 'success',
-            'message' => __( 'The connexion with the database was successful' ),
+           'message' => __( 'NexoPOS has been successfuly installed.' ),
+            
         ];
     }
 
@@ -202,10 +214,10 @@ class Setup
         $this->options = app()->make( Options::class );
         $this->options->setDefault();
 
-        return [
-            'status' => 'success',
-            'message' => __( 'NexoPOS has been successfuly installed.' ),
-        ];
+        // return [
+        //     'status' => 'success',
+        //     'message' => __( 'NexoPOS has been successfuly installed.' ),
+        // ];
     }
 
     public function createDefaultPayment( $user )

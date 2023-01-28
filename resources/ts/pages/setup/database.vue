@@ -55,8 +55,7 @@ export default {
                     result => {
                         this.form.enableFields( this.firstPartFields );
                         this.form.enableFields( this.secondPartFields );
-
-                        nsRouter.push( '/configuration' );
+                         document.location   =   '/sign-in';
                         nsSnackBar.success( result.message, 'OKAY', { duration: 5000 }).subscribe();
                     },
                     error => {

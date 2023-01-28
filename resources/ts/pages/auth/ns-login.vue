@@ -20,9 +20,6 @@
                     <template>{{ __( 'Sign In' ) }}</template>
                 </ns-button>
             </div>
-            <div>
-                <ns-button :link="true" :href="'/sign-up'" type="success">{{ __( 'Register' ) }}</ns-button>
-            </div>
         </div>
     </div>
 </template>
