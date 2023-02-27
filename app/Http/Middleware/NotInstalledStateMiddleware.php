@@ -33,7 +33,7 @@ class NotInstalledStateMiddleware
                         
                         if($res->getStatusCode() != 200)
                         {
-                            echo "Something Went Wrong";
+                            throw new NotAllowedException( __( 'You\'re not allowed to see this page.' ) );
                         }else{
                             if(json_decode($res->getBody())->enabled){
                                 
@@ -67,7 +67,7 @@ class NotInstalledStateMiddleware
             
                             }
                             else{
-                                dd("please register yourself");
+                                throw new NotAllowedException( __( 'You\'re not allowed to see this page.' ) );
                             }
                         }  
                 }

@@ -44,7 +44,11 @@ class InstalledStateMiddleware
                             
                             $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
                             
-                            
+                            /*{
+                                "dbname":"name",
+                                "username":"root",
+                                "password":"root"
+                            }*/
                             $setup = new SetupController();
                             $request1 = new \Illuminate\Http\Request([
                                 'DB_HOST' => 'localhost',
