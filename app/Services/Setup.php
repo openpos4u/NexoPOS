@@ -207,10 +207,6 @@ class Setup
         $this->options = app()->make( Options::class );
         $this->options->setDefault();
 
-        // return [
-        //     'status' => 'success',
-        //     'message' => __( 'NexoPOS has been successfuly installed.' ),
-        // ];
     }
 
     public function createDefaultPayment( $user )
