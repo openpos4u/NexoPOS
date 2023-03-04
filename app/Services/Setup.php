@@ -15,7 +15,7 @@ use Jackiedo\DotenvEditor\Facades\DotenvEditor;
 class Setup
 {
     public Options $options;
-    
+
     /**
      * Attempt database and save db informations
      *
@@ -24,19 +24,19 @@ class Setup
     public function saveDatabaseSettings( Request $request )
     {
         config([ 'database.connections.test' => [
-                'driver' => $request->input( 'database_driver' ) ?: 'mysql',
-                'host' => $request->input( 'hostname' ),
-                'port' => $request->input( 'database_port' ) ?: env('DB_PORT', '3306'),
-                'database' => $request->input( 'database_name' ) ?: database_path( 'database.sqlite' ),
-                'username' => $request->input( 'username' ),
-                'password' => $request->input( 'password' ),
-                'unix_socket' => env('DB_SOCKET', ''),
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => $request->input( 'database_prefix' ),
-                'strict' => true,
-                'engine' => null,
-            ]]);
+            'driver' => $request->input( 'database_driver' ) ?: 'mysql',
+            'host' => $request->input( 'hostname' ),
+            'port' => $request->input( 'database_port' ) ?: env('DB_PORT', '3306'),
+            'database' => $request->input( 'database_name' ) ?: database_path( 'database.sqlite' ),
+            'username' => $request->input( 'username' ),
+            'password' => $request->input( 'password' ),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => $request->input( 'database_prefix' ),
+            'strict' => true,
+            'engine' => null,
+        ]]);
 
         DotEnvEditor::load();
         DotEnvEditor::setKey( 'MAIL_MAILER', 'log' );
@@ -63,7 +63,7 @@ class Setup
         return [
             'status' => 'success',
             'message' => __( 'NexoPOS has been successfuly installed.' ),
-            
+
         ];
     }
 
