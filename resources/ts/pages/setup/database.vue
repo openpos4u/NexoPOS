@@ -50,7 +50,6 @@ export default {
                 }
 
                 const operation  =   this.checkDatabase( form );
-
                 operation.subscribe(
                     result => {
                         this.form.enableFields( this.firstPartFields );

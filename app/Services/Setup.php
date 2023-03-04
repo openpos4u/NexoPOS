@@ -15,7 +15,7 @@ use Jackiedo\DotenvEditor\Facades\DotenvEditor;
 class Setup
 {
     public Options $options;
-    
+
     /**
      * Attempt database and save db informations
      *
@@ -37,57 +37,6 @@ class Setup
             'strict' => true,
             'engine' => null,
         ]]);
-
-        try {
-            $DB = DB::connection( 'test' )->getPdo();
-        } catch (\Exception $e) {
-            switch ( $e->getCode() ) {
-                case 2002:
-                    $message = [
-                        'name' => 'hostname',
-                        'message' => __( 'Unable to reach the host' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1045:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Unable to connect to the database using the credentials provided.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1049:
-                    $message = [
-                        'name' => 'database_name',
-                        'message' => __( 'Unable to select the database.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1044:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Access denied for this user.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1698:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Incorrect Authentication Plugin Provided.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                default:
-                    $message = [
-                        'name' => 'hostname',
-                        'message' => $e->getMessage(),
-                        'status' => 'failed',
-                    ];
-                    break;
-            }
-
-            return response()->json( $message, 403 );
-        }
 
         DotEnvEditor::load();
         DotEnvEditor::setKey( 'MAIL_MAILER', 'log' );
@@ -113,7 +62,7 @@ class Setup
         $this->runMigration($field);
         return [
             'status' => 'success',
-            'message' => __( 'NexoPOS has been successfuly installed.' ),
+            'message' => __( 'NexoPOS has been successfuly installed.' )
         ];
     }
 
@@ -206,7 +155,6 @@ class Setup
          */
         $this->options = app()->make( Options::class );
         $this->options->setDefault();
-
     }
 
     public function createDefaultPayment( $user )
