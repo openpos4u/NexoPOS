@@ -106,15 +106,14 @@ class Setup
          */
         Artisan::call( 'storage:link', [ '--force' => true ] );
 
-        $field['admin_username'] = env('admin_username');
-        $field['password'] = env('admin_password');
-        $field['admin_email'] = env('admin_email');
+        $field['admin_username'] = env('ADMIN_USERNAME');
+        $field['password'] = env('ADMIN_PASSWORD');
+        $field['admin_email'] = env('ADMIN_EMAIL');
 
         $this->runMigration($field);
         return [
             'status' => 'success',
-           'message' => __( 'NexoPOS has been successfuly installed.' ),
-            
+            'message' => __( 'NexoPOS has been successfuly installed.' ),
         ];
     }
 
