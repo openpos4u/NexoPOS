@@ -106,17 +106,11 @@ class Setup
          */
         Artisan::call( 'storage:link', [ '--force' => true ] );
 
-        $field['admin_username'] = 'posuser';
-        $field['password'] = 'rocks22';
-        $field['admin_email'] = 'test@test.com';
+        $field['admin_username'] = env('admin_username');
+        $field['password'] = env('admin_password');
+        $field['admin_email'] = env('admin_email');
 
         $this->runMigration($field);
-
-        // return [
-        //     'status' => 'success',
-        //     'message' => __( 'The connexion with the database was successful' ),
-        // ];
-
         return [
             'status' => 'success',
            'message' => __( 'NexoPOS has been successfuly installed.' ),
