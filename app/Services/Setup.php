@@ -37,91 +37,32 @@ class Setup
                 'strict' => true,
                 'engine' => null,
             ]]);
-        
-        
-        // try {
-        //     $DB = DB::connection( 'test' )->getPdo();
-        // } catch (\Exception $e) {
-        //     switch ( $e->getCode() ) {
-        //         case 2002:
-        //             $message = [
-        //                 'name' => 'hostname',
-        //                 'message' => __( 'Unable to reach the host' ),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //         case 1045:
-        //             $message = [
-        //                 'name' => 'username',
-        //                 'message' => __( 'Unable to connect to the database using the credentials provided.' ),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //         case 1049:
-        //             $message = [
-        //                 'name' => 'database_name',
-        //                 'message' => __( 'Unable to select the database.' ),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //         case 1044:
-        //             $message = [
-        //                 'name' => 'username',
-        //                 'message' => __( 'Access denied for this user.' ),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //         case 1698:
-        //             $message = [
-        //                 'name' => 'username',
-        //                 'message' => __( 'Incorrect Authentication Plugin Provided.' ),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //         default:
-        //             $message = [
-        //                 'name' => 'hostname',
-        //                 'message' => $e->getMessage(),
-        //                 'status' => 'failed',
-        //             ];
-        //             break;
-        //     }
-            
 
-        //     return response()->json( $message, 403 );
-        // }
-
-                DotEnvEditor::load();
-                DotEnvEditor::setKey( 'MAIL_MAILER', 'log' );
-                DotEnvEditor::setKey( 'DB_HOST', $request->input( 'hostname' ) );
-                DotEnvEditor::setKey( 'DB_DATABASE', $request->input( 'database_name' ) ?: database_path( 'database.sqlite' ) );
-                DotEnvEditor::setKey( 'DB_USERNAME', $request->input( 'username' ) );
-                DotEnvEditor::setKey( 'DB_PASSWORD', $request->input( 'password' ) );
-                DotEnvEditor::setKey( 'DB_PREFIX', $request->input( 'database_prefix' ) );
-                DotEnvEditor::setKey( 'DB_PORT', $request->input( 'database_port' ) ?: 3306 );
-                DotEnvEditor::setKey( 'DB_CONNECTION', $request->input( 'database_driver' ) ?: 'mysql' );
-                DotEnvEditor::setKey( 'APP_URL', url()->to( '/' ) );
-                DotenvEditor::save();
+        DotEnvEditor::load();
+        DotEnvEditor::setKey( 'MAIL_MAILER', 'log' );
+        DotEnvEditor::setKey( 'DB_HOST', $request->input( 'hostname' ) );
+        DotEnvEditor::setKey( 'DB_DATABASE', $request->input( 'database_name' ) ?: database_path( 'database.sqlite' ) );
+        DotEnvEditor::setKey( 'DB_USERNAME', $request->input( 'username' ) );
+        DotEnvEditor::setKey( 'DB_PASSWORD', $request->input( 'password' ) );
+        DotEnvEditor::setKey( 'DB_PREFIX', $request->input( 'database_prefix' ) );
+        DotEnvEditor::setKey( 'DB_PORT', $request->input( 'database_port' ) ?: 3306 );
+        DotEnvEditor::setKey( 'DB_CONNECTION', $request->input( 'database_driver' ) ?: 'mysql' );
+        DotEnvEditor::setKey( 'APP_URL', url()->to( '/' ) );
+        DotenvEditor::save();
 
         /**
          * Link the resource storage
          */
         Artisan::call( 'storage:link', [ '--force' => true ] );
 
-        $field['admin_username'] = 'posuser';
-        $field['password'] = 'rocks22';
-        $field['admin_email'] = 'test@test.com';
+        $field['admin_username'] = env('ADMIN_USERNAME');
+        $field['password'] = env('ADMIN_PASSWORD');
+        $field['admin_email'] = env('ADMIN_EMAIL');
 
         $this->runMigration($field);
-
-        // return [
-        //     'status' => 'success',
-        //     'message' => __( 'The connexion with the database was successful' ),
-        // ];
-
         return [
             'status' => 'success',
-           'message' => __( 'NexoPOS has been successfuly installed.' ),
+            'message' => __( 'NexoPOS has been successfuly installed.' ),
             
         ];
     }

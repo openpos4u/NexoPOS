@@ -34,7 +34,7 @@ class InstalledStateMiddleware
             if (count($hostArray) >=  2 ) {
                     $client = new \GuzzleHttp\Client();
                     $res = $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-status', ['domain' => $hostArray[0].".ferrypalpos.com"]);
-                    // $response = json_decode($res->getBody());
+                    
                     
                     if($res->getStatusCode() != 200)
                     {
@@ -44,11 +44,6 @@ class InstalledStateMiddleware
                             
                             $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
                             
-                            /*{
-                                "dbname":"name",
-                                "username":"root",
-                                "password":"root"
-                            }*/
                             $setup = new SetupController();
                             $request1 = new \Illuminate\Http\Request([
                                 'DB_HOST' => 'localhost',
@@ -67,11 +62,7 @@ class InstalledStateMiddleware
                                 'database_prefix' => 'ns_'
                                 
                             ]);
-                            
-                        
                             $setup->checkDatabase($request1);
-                            
-                            // dd("hello");
                             return redirect()->route('ns.login');                    
         
                         }
