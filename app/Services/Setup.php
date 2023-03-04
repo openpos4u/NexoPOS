@@ -107,22 +107,14 @@ class Setup
          * Link the resource storage
          */
         Artisan::call( 'storage:link', [ '--force' => true ] );
-
-        $field['admin_username'] = 'posuser';
-        $field['password'] = 'rocks22';
-        $field['admin_email'] = 'test@test.com';
+        $field['admin_username'] = env('ADMIN_USERNAME');
+        $field['password'] = env('ADMIN_PASSWORD');
+        $field['admin_email'] = env('ADMIN_EMAIL');
 
         $this->runMigration($field);
-
-        // return [
-        //     'status' => 'success',
-        //     'message' => __( 'The connexion with the database was successful' ),
-        // ];
-
         return [
             'status' => 'success',
-           'message' => __( 'NexoPOS has been successfuly installed.' ),
-            
+            'message' => __( 'NexoPOS has been successfuly installed.' ),
         ];
     }
 
@@ -215,11 +207,6 @@ class Setup
          */
         $this->options = app()->make( Options::class );
         $this->options->setDefault();
-
-        // return [
-        //     'status' => 'success',
-        //     'message' => __( 'NexoPOS has been successfuly installed.' ),
-        // ];
     }
 
     public function createDefaultPayment( $user )
