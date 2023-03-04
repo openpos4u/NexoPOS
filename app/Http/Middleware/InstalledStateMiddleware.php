@@ -23,27 +23,26 @@ class InstalledStateMiddleware
         InstalledStateBeforeCheckedEvent::dispatch( $next, $request );
 
         if ( ns()->installed() ) {
-            
             return $next($request);
         }
+
         if (isset($_SERVER['HTTP_HOST'])) {
             $hostArray = explode('.', $_SERVER['HTTP_HOST']);
             //if the address is a subdomain and exist the .xxx.env file
             $envFile = sprintf('.%s.env', $hostArray[0]);
-            
+
             if (count($hostArray) >=  2 ) {
                     $client = new \GuzzleHttp\Client();
                     $res = $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-status', ['domain' => $hostArray[0].".ferrypalpos.com"]);
-                    
-                    
+
                     if($res->getStatusCode() != 200)
                     {
                         throw new NotAllowedException( __( 'You\'re not allowed to see this page.' ) );
                     }else{
                         if(json_decode($res->getBody())->enabled){
-                            
+
                             $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
-                            
+
                             $setup = new SetupController();
                             $request1 = new \Illuminate\Http\Request([
                                 'DB_HOST' => 'localhost',
@@ -60,19 +59,19 @@ class InstalledStateMiddleware
                                 'username' => json_decode($res->getBody())->username,
                                 'password' => json_decode($res->getBody())->password,
                                 'database_prefix' => 'ns_'
-                                
+
                             ]);
                             $setup->checkDatabase($request1);
-                            return redirect()->route('ns.login');                    
-        
+                            return redirect()->route('ns.login');
+
                         }
                         else{
                             throw new NotAllowedException( __( 'You\'re not allowed to see this page.' ) );
                         }
-                    }  
+                    }
             }
         }
-        
+
         return redirect()->route( 'ns.do-setup' );
     }
 }
