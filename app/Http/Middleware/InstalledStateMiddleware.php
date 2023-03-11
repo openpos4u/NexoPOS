@@ -38,9 +38,7 @@ class InstalledStateMiddleware
         $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
         $dbname = json_decode($res->getBody())->dbname ;
 
-
         if ( ns()->installed() && $dbname == env('DB_DATABASE') || (DB::table('nexopos_options')->exists())) {
-
             return $next($request);
         }
 
