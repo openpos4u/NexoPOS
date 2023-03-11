@@ -53,8 +53,6 @@ class Setup
         /**
          * Link the resource storage
          */
-
-
         Artisan::call( 'storage:link', [ '--force' => true ] );
 
         $field['admin_username'] = env('ADMIN_USERNAME');
