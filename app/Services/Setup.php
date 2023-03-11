@@ -66,9 +66,7 @@ class Setup
                 $this->options = app()->make( Options::class );
                 $this->options->setDefault();
             }
-         }catch(Exception $e)
-         {
-
+         }catch(Exception $e){
             $this->runMigration($field);
          }
 
