@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SetupController;
 use Jackiedo\DotenvEditor\Facades\DotenvEditor;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotAllowedException;
 
 class InstalledStateMiddleware
@@ -22,12 +24,27 @@ class InstalledStateMiddleware
     {
         InstalledStateBeforeCheckedEvent::dispatch( $next, $request );
 
-        if ( ns()->installed() ) {
+        $hostArray = explode('.', $_SERVER['HTTP_HOST']);
+
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-status', ['domain' => $hostArray[0].".ferrypalpos.com"]);
+
+        if($res->getStatusCode() != 200)
+        {
+            throw new NotAllowedException( __( 'You\'re not allowed to see this page.' ) );
+        }
+
+        $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
+        $dbname = json_decode($res->getBody())->dbname ;
+
+
+        if ( ns()->installed() && $dbname == env('DB_DATABASE') || (DB::table('nexopos_options')->exists())) {
+
             return $next($request);
         }
 
         if (isset($_SERVER['HTTP_HOST'])) {
-            $hostArray = explode('.', $_SERVER['HTTP_HOST']);
             //if the address is a subdomain and exist the .xxx.env file
             $envFile = sprintf('.%s.env', $hostArray[0]);
 
