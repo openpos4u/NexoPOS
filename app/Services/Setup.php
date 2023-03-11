@@ -59,7 +59,15 @@ class Setup
         $field['password'] = env('ADMIN_PASSWORD');
         $field['admin_email'] = env('ADMIN_EMAIL');
 
-        $this->runMigration($field);
+        try{
+            if ( DB::connection()->getPdo() ) {
+                $this->options = app()->make( Options::class );
+                $this->options->setDefault();
+            }
+         }catch(Exception $e){
+            $this->runMigration($field);
+         }
+
         return [
             'status' => 'success',
             'message' => __( 'NexoPOS has been successfuly installed.' )
