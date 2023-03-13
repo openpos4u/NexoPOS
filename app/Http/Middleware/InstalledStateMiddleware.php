@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotAllowedException;
 use App\Services\Setup;
+use Illuminate\Support\Facades\Env;
+use Dotenv\Dotenv;
+use Illuminate\Support\Facades\File;
 
 class InstalledStateMiddleware
 {
@@ -37,9 +40,12 @@ class InstalledStateMiddleware
         }
 
         $res= $client->get('https://us-central1-ishipd-prod.cloudfunctions.net/pos-config?domain='.$hostArray[0].'.ferrypalpos.com');
-        $dbname = json_decode($res->getBody())->dbname ;
+        $dbName = json_decode($res->getBody())->dbname ;
         $newsetup = new Setup();
-        if ( ns()->installed() && ($dbname == env('DB_DATABASE') && $newsetup->testDBConnexion())) {
+        if ( ns()->installed() && ($dbName == env('DB_DATABASE') && $newsetup->testDBConnexion())) {
+            $newEnvFile = '.env.'.$dbName;
+            $dotenv = Dotenv::createImmutable(base_path(), $newEnvFile);
+            $dotenv->load();
             return $next($request);
         }
 
@@ -78,6 +84,37 @@ class InstalledStateMiddleware
 
                             ]);
                             $setup->checkDatabase($request1);
+
+
+                            // Set the database name
+                            $dbName = json_decode($res->getBody())->dbname;
+                            $dbUsername = json_decode($res->getBody())->username;
+                            $dbPassword = json_decode($res->getBody())->password;
+
+                            // Get the contents of the default .env file
+                            $defaultEnv = File::get(base_path('.env'));
+
+                            // Replace the database name in the default .env file
+                            $newEnv = str_replace(
+                                [
+                                    'DB_DATABASE=' . config('database.connections.mysql.database'),
+                                    'DB_USERNAME=' . config('database.connections.mysql.username'),
+                                    'DB_PASSWORD=' . config('database.connections.mysql.password'),
+                                ],
+                                [
+                                    'DB_DATABASE=' . $dbName,
+                                    'DB_USERNAME=' . $dbUsername,
+                                    'DB_PASSWORD=' . $dbPassword,
+                                ],
+                                $defaultEnv
+                            );
+
+                            // Write the new .env file
+                            File::put(base_path('.env.' . $dbName), $newEnv);
+                            $newEnvFile = '.env.'.$dbName;
+                            $dotenv = Dotenv::createImmutable(base_path(), $newEnvFile);
+                            $dotenv->load();
+
                             return redirect()->route('ns.login');
 
                         }
