@@ -59,14 +59,12 @@ class Setup
         $field['password'] = env('ADMIN_PASSWORD');
         $field['admin_email'] = env('ADMIN_EMAIL');
 
-        try{
-            if ( DB::connection()->getPdo() ) {
-                $this->options = app()->make( Options::class );
-                $this->options->setDefault();
-            }
-         }catch(Exception $e){
+        if($this->testDBConnexion()){
+            $this->options = app()->make( Options::class );
+            $this->options->setDefault();
+        }else{
             $this->runMigration($field);
-         }
+        }
 
         return [
             'status' => 'success',
@@ -198,57 +196,9 @@ class Setup
         try {
             $DB = DB::connection( env( 'DB_CONNECTION', 'mysql' ) )->getPdo();
 
-            return [
-                'status' => 'success',
-                'message' => __( 'Database connection was successful.' ),
-            ];
+            return True;
         } catch (\Exception $e) {
-            switch ( $e->getCode() ) {
-                case 2002:
-                    $message = [
-                        'name' => 'hostname',
-                        'message' => __( 'Unable to reach the host' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1045:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Unable to connect to the database using the credentials provided.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1049:
-                    $message = [
-                        'name' => 'database_name',
-                        'message' => __( 'Unable to select the database.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1044:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Access denied for this user.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                case 1698:
-                    $message = [
-                        'name' => 'username',
-                        'message' => __( 'Incorrect Authentication Plugin Provided.' ),
-                        'status' => 'failed',
-                    ];
-                    break;
-                default:
-                    $message = [
-                        'name' => 'hostname',
-                        'message' => $e->getMessage(),
-                        'status' => 'failed',
-                    ];
-                    break;
-            }
-
-            return response()->json( $message, 403 );
+            return False;
         }
     }
 }
