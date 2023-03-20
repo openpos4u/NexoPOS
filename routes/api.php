@@ -2,6 +2,9 @@
 
 use App\Events\BeforeStartApiRouteEvent;
 use Illuminate\Http\Request;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Middleware\checkTenantMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,5 +46,11 @@ if ( env( 'NS_WILDCARD_ENABLED' ) ) {
         include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
     });
 } else {
-    include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
+    Route::middleware([
+        'api',
+        'universal',
+        InitializeTenancyByDomain::class,
+    ])->group(function () {
+        include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
+    });
 }

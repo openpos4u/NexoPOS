@@ -53,6 +53,7 @@ class Kernel extends HttpKernel
             LoadLangMiddleware::class,
             // 'throttle:80,1',
         ],
+        'universal' => [],
     ];
 
     /**

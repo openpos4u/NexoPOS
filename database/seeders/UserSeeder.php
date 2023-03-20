@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\UserAttribute;
+use App\Models\UserRoleRelation;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -27,6 +29,13 @@ class UserSeeder extends Seeder
         $user->active = true; // first user active by default;
         $user->save();
 
+        $userattribute = new UserAttribute;
+        $userattribute->user_id = $userID;
+        $userattribute->save();
 
+        $userRoleRelatioin = new UserRoleRelation();
+        $userRoleRelatioin->role_id = 2;
+        $userRoleRelatioin->user_id = $userID;
+        $userRoleRelatioin->save();
     }
 }
