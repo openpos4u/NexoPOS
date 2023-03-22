@@ -22,9 +22,9 @@ class UserSeeder extends Seeder
 
         $user = new User;
         $user->id = $userID;
-        $user->username = env('ADMIN_USERNAME');
-        $user->password = Hash::make( env('ADMIN_PASSWORD'));
-        $user->email = env('ADMIN_EMAIL');
+        $user->username = env('ADMIN_USERNAME','posuser');
+        $user->password = Hash::make( env('ADMIN_PASSWORD','rocks22'));
+        $user->email = env('ADMIN_EMAIL','test@test.com');
         $user->author = $userID;
         $user->active = true; // first user active by default;
         $user->save();

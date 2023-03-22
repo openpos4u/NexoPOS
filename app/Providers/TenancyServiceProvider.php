@@ -111,20 +111,17 @@ class TenancyServiceProvider extends ServiceProvider
                 $hostArray = explode('.', $_SERVER['HTTP_HOST']);
                     if (count($hostArray) >=  2 ) {
                         $tenant = Tenant::where('id',$hostArray[0])->first();
+
                         if($tenant)
                         {
                             // Set the session domain for the current tenant
                             config(['session.domain' => $tenant['session_domain']]);
-                            // Set the Sanctrum for the current tenant
-                            config(['SANCTUM_STATEFUL_DOMAINS'=>$tenant['session_domain']]);
                             // Set the app URL for the current tenant
                             config(['app.url' => $tenant['app_url']]);
                         }
                     }else{
                         // Set the session domain for the Central Domain
                         config(['session.domain' => $hostArray[0]]);
-                        // Set the Sanctrum for the Central Domain
-                        config(['SANCTUM_STATEFUL_DOMAINS'=>$hostArray[0]]);
                         // Set the app URL for the Central Domain
                         config(['app.url' => env('APP_URL')]);
                     }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\checkTenantMiddleware;
+use App\Events\BeforeStartWebRouteEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +29,20 @@ Route::middleware([
     InitializeTenancyByDomain::$onFail = function ($exception, $request, $next) {
         return redirect(env('APP_URL'));
     };
-    include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'web.php';
+    $domain = pathinfo( env( 'APP_URL' ) );
+    BeforeStartWebRouteEvent::dispatch();
+    if ( env( 'NS_WILDCARD_ENABLED' ) ) {
+    /**
+     * The defined route should only be applicable
+     * to the main domain.
+     */
+    $domainString = ( $domain[ 'filename' ] ?: 'localhost' ) . ( isset( $domain[ 'extension' ] ) ? '.' . $domain[ 'extension' ] : '' );
+
+    Route::domain( $domainString )->group( function() {
+        include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'web-base.php';
+    });
+    } else {
+        include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'web-base.php';
+    }
+
 });
