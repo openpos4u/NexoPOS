@@ -38,6 +38,11 @@ class RouteServiceProvider extends ServiceProvider
             URL::forceScheme( 'https' );
         }
 
+        $this->routes(function () {
+            $this->mapApiRoutes();
+            $this->mapWebRoutes();
+        });
+
         parent::boot();
     }
 
@@ -64,9 +69,12 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/web.php'));
+        foreach ($this->centralDomains() as $domain) {
+            Route::middleware('web')
+                ->domain($domain)
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
+        }
     }
 
     /**
@@ -82,6 +90,18 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+            foreach ($this->centralDomains() as $domain) {
+                Route::prefix('api')
+                    ->domain($domain)
+                    ->middleware('api')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/api.php'));
+            }
+    }
+
+    protected function centralDomains(): array
+    {
+        return config('tenancy.central_domains');
     }
 
     /**

@@ -2,8 +2,15 @@
 
 use App\Events\BeforeStartApiRouteEvent;
 use Illuminate\Http\Request;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Middleware\checkTenantMiddleware;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Middleware\ClearRequestCacheMiddleware;
+use App\Http\Middleware\InstalledStateMiddleware;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Http\Controllers\TenantController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,5 +50,24 @@ if ( env( 'NS_WILDCARD_ENABLED' ) ) {
         include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
     });
 } else {
-    include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
+    Route::middleware([
+        InstalledStateMiddleware::class,
+        SubstituteBindings::class,
+        ClearRequestCacheMiddleware::class,
+    ])->group( function() {
+        Route::middleware([
+            'auth:sanctum',
+        ])->group( function() {
+            Route::post('/create-tenant',[TenantController::class,'create']);
+            Route::get('/list-tenant',[TenantController::class,'list']);
+        });
+    });
+
+    Route::middleware([
+        'api',
+        'universal',
+        InitializeTenancyByDomain::class,
+    ])->group(function () {
+        include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
+    });
 }
