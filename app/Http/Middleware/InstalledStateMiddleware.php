@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotAllowedException;
 use App\Services\Setup;
-
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Illuminate\Support\Str;
 class InstalledStateMiddleware
 {
     /**
@@ -25,8 +27,19 @@ class InstalledStateMiddleware
      */
     public function handle($request, Closure $next)
     {
-        InstalledStateBeforeCheckedEvent::dispatch( $next, $request );
+        $domain = Str::replaceFirst( 'http://', '', env('APP_URL') );
+        $domain = Str::replaceFirst( 'https://', '', $domain );
 
+        if ($request->getHost() != $domain) {
+            if(!tenant('id')){
+                InitializeTenancyByDomain::$onFail = function ($exception, $request, $next) {
+                    throw new NotAllowedException( __( 'Something Unusual Occur' ) );
+                    return redirect(env('APP_URL').'/sign-in');
+                };
+            }
+        }
+
+        InstalledStateBeforeCheckedEvent::dispatch( $next, $request );
         if ( ns()->installed()) {
             ns()->update
             ->getMigrations()

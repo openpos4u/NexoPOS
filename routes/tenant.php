@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
-use App\Http\Middleware\checkTenantMiddleware;
 use App\Events\BeforeStartWebRouteEvent;
 
 /*

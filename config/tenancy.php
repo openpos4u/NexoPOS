@@ -10,6 +10,7 @@ return [
     'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
 
     'domain_model' => Domain::class,
+    'redirect_on_fail'=> env('APP_URL'),
 
     /**
      * The list of domains hosting your central app.
@@ -126,7 +127,7 @@ return [
          * edge cases, it can cause issues (like using Passport with Vapor - see #196), so
          * you may want to disable this if you are experiencing these edge case issues.
          */
-        'suffix_storage_path' => true,
+        'suffix_storage_path' => false,
 
         /**
          * By default, asset() calls are made multi-tenant too. You can use global_asset() and mix()
@@ -135,7 +136,7 @@ return [
          * disable asset() helper tenancy and explicitly use tenant_asset() calls in places
          * where you want to use tenant-specific assets (product images, avatars, etc).
          */
-        'asset_helper_tenancy' => true,
+        'asset_helper_tenancy' => false,
     ],
 
     /**
