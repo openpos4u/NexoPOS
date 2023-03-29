@@ -25,8 +25,8 @@ return new class extends Migration
     {
         $domain = Str::replaceFirst( 'http://', '', url( '/' ) );
         $domain = Str::replaceFirst( 'https://', '', $domain );
-        DotenvEditor::setKey( 'SANCTUM_STATEFUL_DOMAINS', $domain );
-        DotenvEditor::setKey( 'SESSION_DOMAIN', $domain );
+        DotenvEditor::setKey( 'SANCTUM_STATEFUL_DOMAINS', '*.'.$domain.','.$domain );
+        DotenvEditor::setKey( 'SESSION_DOMAIN', '*.'.$domain );
         DotenvEditor::save();
     }
 

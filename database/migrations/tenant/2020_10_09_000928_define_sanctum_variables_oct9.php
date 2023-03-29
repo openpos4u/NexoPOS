@@ -23,11 +23,11 @@ return new class extends Migration
      */
     public function up()
     {
-        $domain = Str::replaceFirst( 'http://', '', url( '/' ) );
-        $domain = Str::replaceFirst( 'https://', '', $domain );
-        DotenvEditor::setKey( 'SANCTUM_STATEFUL_DOMAINS', $domain );
-        DotenvEditor::setKey( 'SESSION_DOMAIN', $domain );
-        DotenvEditor::save();
+        // $domain = Str::replaceFirst( 'http://', '', url( '/' ) );
+        // $domain = Str::replaceFirst( 'https://', '', $domain );
+        // DotenvEditor::setKey( 'SANCTUM_STATEFUL_DOMAINS', $domain );
+        // DotenvEditor::setKey( 'SESSION_DOMAIN', $domain );
+        // DotenvEditor::save();
     }
 
     /**
@@ -37,8 +37,8 @@ return new class extends Migration
      */
     public function down()
     {
-        DotenvEditor::deleteKey( 'SANCTUM_STATEFUL_DOMAINS' );
-        DotenvEditor::deleteKey( 'SESSION_DOMAIN' );
-        DotenvEditor::save();
+        // DotenvEditor::deleteKey( 'SANCTUM_STATEFUL_DOMAINS' );
+        // DotenvEditor::deleteKey( 'SESSION_DOMAIN' );
+        // DotenvEditor::save();
     }
 };
