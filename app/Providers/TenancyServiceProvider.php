@@ -14,6 +14,7 @@ use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
 use App\Models\Tenant;
 use App\Services\Setup;
+use Illuminate\Support\Facades\Log;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -113,7 +114,7 @@ class TenancyServiceProvider extends ServiceProvider
             if($setup->testDBConnexion()){
                 if (isset($_SERVER['HTTP_HOST'])) {
                     $hostArray = explode('.', $_SERVER['HTTP_HOST']);
-                        if (count($hostArray) >=  2 ) {
+                        if (count($hostArray) >  2 ) {
                             $tenant = Tenant::where('id',$hostArray[0])->first();
 
                             if($tenant)
@@ -122,6 +123,22 @@ class TenancyServiceProvider extends ServiceProvider
                                 config(['session.domain' => $tenant['session_domain']]);
                                 // Set the app URL for the current tenant
                                 config(['app.url' => $tenant['app_url']]);
+                            }
+                        }else if(count($hostArray) == 2){
+                            $tenant = Tenant::where('id',$hostArray[0])->first();
+
+                            if($tenant)
+                            {
+                                // Set the session domain for the current tenant
+                                config(['session.domain' => $tenant['session_domain']]);
+                                // Set the app URL for the current tenant
+                                config(['app.url' => $tenant['app_url']]);
+                            }
+                            else{
+                                Log::info($hostArray[0].".".env('DOMAIN'));
+                                config(['session.domain' => $hostArray[0].".".env('DOMAIN')]);
+                                // Set the app URL for the Central Domain
+                                config(['app.url' => env('APP_URL')]);
                             }
                         }else{
                             // Set the session domain for the Central Domain
